@@ -1,0 +1,10 @@
+version: '2.1'
+
+services:
+  bruna-danilo-testers-app:
+    image: bruna-danilo-testers-app
+    build: .
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000

@@ -1,0 +1,2 @@
+/Users/danilo/workspace/bruna-danilo-testers/Bruna.Danilo.Testers/bruna-danilo-testers-app/obj/Debug/bruna-danilo-testers-app.csprojResolveAssemblyReference.cache
+/Users/danilo/workspace/bruna-danilo-testers/Bruna.Danilo.Testers/bruna-danilo-testers-app/obj/Debug/bruna-danilo-testers-app.csproj.CoreCompileInputs.cache
