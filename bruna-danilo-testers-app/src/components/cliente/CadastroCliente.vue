@@ -1,77 +1,169 @@
 <template>
   <div>
-    <b-card bg-variant="light" class="login-box">
-      <b-form-group vertical breakpoint="lg" label="Cliente" label-size="lg" label-class="font-weight-bold pt-0" class="mb-0">
+    <b-card bg-variant="light"
+            class="login-box">
+      <b-form-group vertical
+                    breakpoint="lg"
+                    label="Cliente"
+                    label-size="lg"
+                    label-class="font-weight-bold pt-0"
+                    class="mb-0">
         <div v-if="model.id > 0">
           <h3>ID: {{ model.id }}</h3>
         </div>
         <div class="row">
           <div class="col">
-            <b-form-group horizontal label="CNPJ:" label-class="text-sm-right" label-for="cnpj">
-              <bd-validable-input type="text" :mask="'##.###.###/####-##'" name="cnpj" placeholder="CNPJ" :model.sync="model.cnpj" :atualizaModel="atualizaModel" :modelState.sync="modelState"></bd-validable-input>
+            <b-form-group horizontal
+                          label="CNPJ:"
+                          label-class="text-sm-right"
+                          label-for="cnpj">
+              <bd-validable-input type="text"
+                                  :mask="'##.###.###/####-##'"
+                                  name="cnpj"
+                                  placeholder="CNPJ"
+                                  :model.sync="model.cnpj"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"></bd-validable-input>
             </b-form-group>
           </div>
           <div class="col">
-            <b-form-group horizontal label="Razão Social:" label-class="text-sm-right" label-for="razaoSocial">
-              <bd-validable-input type="text" name="razaoSocial" placeholder="Razão Social" :model.sync="model.razaoSocial" :atualizaModel="atualizaModel" :modelState.sync="modelState"></bd-validable-input>
-            </b-form-group>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <b-form-group horizontal label="Nome Fantasia:" label-class="text-sm-right" label-for="nomeFantasia">
-              <bd-validable-input type="text" name="nomeFantasia" placeholder="Nome Fantasia" :model.sync="model.nomeFantasia" :atualizaModel="atualizaModel" :modelState.sync="modelState"></bd-validable-input>
-            </b-form-group>
-          </div>
-          <div class="col">
-            <b-form-group horizontal label="Contato:" label-class="text-sm-right" label-for="contato">
-              <bd-validable-input type="text" name="contato" placeholder="Contato" :model.sync="model.contato" :atualizaModel="atualizaModel" :modelState.sync="modelState"></bd-validable-input>
-            </b-form-group>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <b-form-group horizontal label="Email:" label-class="text-sm-right" label-for="email">
-              <bd-validable-input type="text" name="email" placeholder="Email" :model.sync="model.email" :atualizaModel="atualizaModel" :modelState.sync="modelState"></bd-validable-input>
-            </b-form-group>
-          </div>
-          <div class="col">
-            <b-form-group horizontal label="Endereço:" label-class="text-sm-right" label-for="endereco">
-              <bd-validable-input type="text" name="endereco" placeholder="Endereço" :model.sync="model.endereco" :atualizaModel="atualizaModel" :modelState.sync="modelState"></bd-validable-input>
+            <b-form-group horizontal
+                          label="Razão Social:"
+                          label-class="text-sm-right"
+                          label-for="razaoSocial">
+              <bd-validable-input type="text"
+                                  name="razaoSocial"
+                                  placeholder="Razão Social"
+                                  :model.sync="model.razaoSocial"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"></bd-validable-input>
             </b-form-group>
           </div>
         </div>
         <div class="row">
           <div class="col">
-            <b-form-group horizontal label="Telefone:" label-class="text-sm-right" label-for="telefone">
-              <bd-validable-input type="text" :mask="'(##) #####-####'" name="telefone" placeholder="Telefone" :model.sync="model.telefone" :atualizaModel="atualizaModel" :modelState.sync="modelState"></bd-validable-input>
+            <b-form-group horizontal
+                          label="Nome Fantasia:"
+                          label-class="text-sm-right"
+                          label-for="nomeFantasia">
+              <bd-validable-input type="text"
+                                  name="nomeFantasia"
+                                  placeholder="Nome Fantasia"
+                                  :model.sync="model.nomeFantasia"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"></bd-validable-input>
             </b-form-group>
           </div>
           <div class="col">
-            <b-form-group horizontal label="Skype:" label-class="text-sm-right" label-for="skype">
-              <bd-validable-input type="text" name="skype" placeholder="Skype" :model.sync="model.skype" :atualizaModel="atualizaModel" :modelState.sync="modelState"></bd-validable-input>
+            <b-form-group horizontal
+                          label="Contato:"
+                          label-class="text-sm-right"
+                          label-for="contato">
+              <bd-validable-input type="text"
+                                  name="contato"
+                                  placeholder="Contato"
+                                  :model.sync="model.contato"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"></bd-validable-input>
             </b-form-group>
           </div>
         </div>
         <div class="row">
           <div class="col">
-            <b-form-group horizontal label="Estado:" label-class="text-sm-right" label-for="cidadeEstado">
+            <b-form-group horizontal
+                          label="Email:"
+                          label-class="text-sm-right"
+                          label-for="email">
+              <bd-validable-input type="text"
+                                  name="email"
+                                  placeholder="Email"
+                                  :model.sync="model.email"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"></bd-validable-input>
+            </b-form-group>
+          </div>
+          <div class="col">
+            <b-form-group horizontal
+                          label="Endereço:"
+                          label-class="text-sm-right"
+                          label-for="endereco">
+              <bd-validable-input type="text"
+                                  name="endereco"
+                                  placeholder="Endereço"
+                                  :model.sync="model.endereco"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"></bd-validable-input>
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <b-form-group horizontal
+                          label="Telefone:"
+                          label-class="text-sm-right"
+                          label-for="telefone">
+              <bd-validable-input type="text"
+                                  :mask="'(##) #####-####'"
+                                  name="telefone"
+                                  placeholder="Telefone"
+                                  :model.sync="model.telefone"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"></bd-validable-input>
+            </b-form-group>
+          </div>
+          <div class="col">
+            <b-form-group horizontal
+                          label="Skype:"
+                          label-class="text-sm-right"
+                          label-for="skype">
+              <bd-validable-input type="text"
+                                  name="skype"
+                                  placeholder="Skype"
+                                  :model.sync="model.skype"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"></bd-validable-input>
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <b-form-group horizontal
+                          label="Estado:"
+                          label-class="text-sm-right"
+                          label-for="cidadeEstado">
               <div id="estadoDiv">
-                <bd-validable-input type="select" placeholder="UF" name="estado" :model.sync="estado" :atualizaModel="atualizaModel" :modelState.sync="modelState" :options="sortedEstados"></bd-validable-input>
+                <bd-validable-input type="select"
+                                    placeholder="UF"
+                                    name="estado"
+                                    :model.sync="estado"
+                                    :atualizaModel="atualizaModel"
+                                    :modelState.sync="modelState"
+                                    :options="sortedEstados"></bd-validable-input>
               </div>
             </b-form-group>
           </div>
           <div class="col">
-            <b-form-group horizontal label="Cidade:" label-class="text-sm-right" label-for="cidadeEstado">
+            <b-form-group horizontal
+                          label="Cidade:"
+                          label-class="text-sm-right"
+                          label-for="cidadeEstado">
               <div id="cidadeDiv">
-                <bd-validable-input type="select" placeholder="Cidade" name="cidade" :model.sync="cidade" :atualizaModel="atualizaModel" :modelState.sync="modelState" :options="sortedCidades" :isDisabled="cidades.length <= 0"></bd-validable-input>
+                <bd-validable-input type="select"
+                                    placeholder="Cidade"
+                                    name="cidade"
+                                    :model.sync="cidade"
+                                    :atualizaModel="atualizaModel"
+                                    :modelState.sync="modelState"
+                                    :options="sortedCidades"
+                                    :isDisabled="cidades.length <= 0"></bd-validable-input>
               </div>
             </b-form-group>
           </div>
         </div>
         <div class="row">
           <div class="col">
-            <b-button @click="salvar" variant="primary">Salvar</b-button>
+            <b-button @click="salvar"
+                      variant="primary">Salvar</b-button>
             <b-button @click="cancelar">Cancelar</b-button>
           </div>
         </div>

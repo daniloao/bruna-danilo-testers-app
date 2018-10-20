@@ -17,13 +17,12 @@ const createLintingRule = () => ({
         formatter: require('eslint-friendly-formatter'),
         emitWarning: !config.dev.showEslintErrorsInOverlay
     }
-})
+});
 
 module.exports = {
     context: path.resolve(__dirname, '../'),
     entry: {
-        'babel-polyfill': 'babel-polyfill',
-        app: './src/main.js'
+        app: ['babel-polyfill', './src/main.js']
     },
     output: {
         path: config.build.assetsRoot,

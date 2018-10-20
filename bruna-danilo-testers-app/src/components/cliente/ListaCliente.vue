@@ -5,27 +5,43 @@
       <div class="card-body">
         <div class="row form-group">
           <div class="col col-md-4">
-            <b-form-input type="text" v-mask="'##.###.###/####-##'" placeholder="CNPJ" v-model="model.cnpj" name="cnpj"></b-form-input>
+            <b-form-input type="text"
+                          v-mask="'##.###.###/####-##'"
+                          placeholder="CNPJ"
+                          v-model="model.cnpj"
+                          name="cnpj"></b-form-input>
           </div>
           <div class="col col-md-2">
-            <model-select :options="sortedEstados" v-model="model.estadoId" placeholder="UF" name="uf">
+            <model-select :options="sortedEstados"
+                          v-model="model.estadoId"
+                          placeholder="UF"
+                          name="uf">
             </model-select>
           </div>
           <div class="col col-md-5">
-            <model-select :options="sortedCidades" v-model="model.cidadeId" :isDisabled="cidades.length <= 0" placeholder="Cidade" name="cidade"></model-select>
+            <model-select :options="sortedCidades"
+                          v-model="model.cidadeId"
+                          :isDisabled="cidades.length <= 0"
+                          placeholder="Cidade"
+                          name="cidade"></model-select>
           </div>
           <div class="col col-md-1 float-right">
-            <button class="btn  btn-outline-primary" @click="filtrar()">Filtrar</button>
+            <button class="btn  btn-outline-primary"
+                    @click="filtrar()">Filtrar</button>
           </div>
         </div>
         <div class="row form-group float-right">
           <div class="col col-md-12">
-            <button class="btn btn-primary" @click="adiciona()">Adicionar</button>
+            <button class="btn btn-primary"
+                    @click="adiciona()">Adicionar</button>
           </div>
         </div>
       </div>
     </div>
-    <bd-paginacao :load-data="loadClientes" sort-column="id" :action-columns="actionColumns" :model="model"></bd-paginacao>
+    <bd-paginacao :load-data="loadClientes"
+                  sort-column="id"
+                  :action-columns="actionColumns"
+                  :model="model"></bd-paginacao>
   </div>
 </template>
 
@@ -33,6 +49,7 @@
 import BdPaginacao from '@/components/shared/BdPaginacao';
 import IBGEService from '@/services/ibge-service';
 import ClienteService from '@/services/cliente-service';
+import MessageService from '@/services/message-service';
 import _ from 'lodash';
 import { ModelSelect } from 'vue-search-select';
 
@@ -75,6 +92,7 @@ export default {
       this.$router.push('/cliente');
     },
     delete(cliente) {
+      MessageService.error('test', 'test');
       console.log('delete');
       console.log(cliente);
     },

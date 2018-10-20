@@ -17,7 +17,6 @@ const ifAuthenticated = (to, from, next) => {
         next();
     }, () => {
         next('/');
-        // AccountService.logOut();
     });
 };
 

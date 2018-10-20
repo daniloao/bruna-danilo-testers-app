@@ -1,4 +1,5 @@
 ﻿import Vue from 'vue';
+import MessageService from '@/services/message-service';
 
 export default {
     resource: undefined,
@@ -21,54 +22,110 @@ export default {
         return this.resource.logOut();
     },
     login(user) {
+        const loader = Vue.prototype.$loading.show();
+
         this.setUp();
         user.name = user.email;
         return this.resource.login(user).then((response) => {
-            Vue.ls.set('user', response.data);
-            Vue.ls.set('roles', response.data.userRoles);
+            this.setCurrentUser(response.data.token);
+            loader.hide();
+            return response;
+        }, () => {
+            loader.hide();
         });
     },
     register(user) {
+        const loader = Vue.prototype.$loading.show();
+
         this.setUp();
         user.name = user.email;
         return this.resource.register(user).then((response) => {
-            Vue.ls.set('user', response.data);
-            this.forceLoadSession();
+            this.setCurrentUser(response.data.token);
+            loader.hide();
+            return response;
+        }, () => {
+            loader.hide();
         });
     },
+    decodeJwtToken(tkn) {
+        const arr = tkn.split('.');
+        return {
+            header: JSON.parse(atob(arr[0])),
+            payload: JSON.parse(atob(arr[1])),
+            secret: arr[2]
+        };
+    },
     logOut() {
-        this.logOutApi();
+        this.removeSession();
+
+        if (Vue.ls.get('user')) {
+            this.logOutApi();
+        }
+
         this.removeLogin();
         window.location = '/';
     },
     removeLogin() {
         Vue.ls.remove('user');
+    },
+    removeSession() {
         Vue.ls.remove('roles');
         Vue.ls.remove('lastSessionLoad');
     },
-    isAuthenticated(shouldLoadSession = true) {
-        if (shouldLoadSession === true) this.loadSession();
+    isAuthenticated() {
+        this.refreshToken();
         return Vue.ls.get('user') !== null;
     },
     refreshToken() {
         this.setUp();
+
+        if (!Vue.ls.get('user')) {
+            this.removeSession();
+            return Promise.resolve();
+        }
+        const lastSessionLoad = Vue.ls.get('lastSessionLoad');
+
+        if (lastSessionLoad) {
+            const lastSessionLoadDate = new Date(lastSessionLoad);
+            const agora = new Date();
+            lastSessionLoadDate.setMinutes(lastSessionLoadDate.getMinutes() + 2);
+            if (agora < lastSessionLoadDate) {
+                return Promise.resolve();
+            }
+        }
+
         return this.resource.refreshToken().then((response) => {
-            Vue.ls.set('user', response.data);
-            Vue.ls.set('roles', response.data.userRoles);
-            Vue.ls.set('lastSessionLoad', new Date());
+            this.setCurrentUser(response.data.token);
+            return response;
+        }, (error) => {
+            console.error(error);
+            MessageService.warn('Parece que sua sessão expirou, favor faca o login novamente.', 'Sessão expirada');
+            this.logOut();
+            return error;
         });
+    },
+    setCurrentUser(token) {
+        const result = this.decodeJwtToken(token);
+
+        Vue.ls.set('user', {
+            email: result.payload.email,
+            name: result.payload.email,
+            token: token
+        });
+        Vue.ls.set('roles', result.payload.role);
+        Vue.ls.set('lastSessionLoad', new Date());
     },
     hasRole(roleName) {
         this.setUp();
-        if (!this.isAuthenticated()) {
-            Vue.ls.remove('roles');
-            return false;
-        }
-        this.loadSession();
+        this.refreshToken();
 
         const roles = Vue.ls.get('roles');
 
         if (!roles || roles.length <= 0) return false;
+
+        if (!Array.isArray(roles)) {
+            return roles === roleName;
+        }
 
         const role = roles.find(r => r.roleId === roleName);
 
@@ -76,52 +133,5 @@ export default {
     },
     isAdmin() {
         return this.hasRole('ADMIN');
-    },
-    loadRoles() {
-        this.setUp();
-        if (!this.isAuthenticated(false)) {
-            Vue.ls.remove('roles');
-            return;
-        }
-
-        this.resource.getRoles().then((response) => {
-            Vue.ls.remove('roles');
-            Vue.ls.set('roles', response.data);
-        }, () => {
-            Vue.ls.remove('roles');
-        });
-    },
-    loadSession() {
-        this.setUp();
-        if (this.isAuthenticated(false)) {
-            const lastSessionLoad = Vue.ls.get('lastSessionLoad');
-
-            if (!lastSessionLoad) {
-                this.refreshToken();
-                return;
-            }
-
-            const lastSessionLoadDate = new Date(lastSessionLoad);
-            const agora = new Date();
-            lastSessionLoadDate.setMinutes(lastSessionLoadDate.getMinutes() + 10);
-            if (agora > lastSessionLoad) {
-                this.refreshToken();
-            }
-        }
-    },
-    forceLoadSession() {
-        if (this.isAuthenticated(false)) {
-            Vue.ls.set('lastSessionLoad', new Date());
-            this.loadRoles();
-
-            this.resource.isAuthenticated().then((response) => {
-                    if (response.data !== true) {
-                        this.removeLogin();
-                    }
-                },
-                () => {
-                    this.removeLogin();
-                });
-        }
     }
 };

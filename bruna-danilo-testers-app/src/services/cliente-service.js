@@ -17,8 +17,13 @@ export default {
         return this.resource.getClientes(model);
     },
     saveCliente(model) {
+        const loader = Vue.prototype.$loading.show();
         this.setUp();
-        return this.resource.saveCliente(model);
+        return this.resource.saveCliente(model).then(() => {
+            loader.hide();
+        }, () => {
+            loader.hide();
+        });
     },
     getCliente(id) {
         this.setUp();

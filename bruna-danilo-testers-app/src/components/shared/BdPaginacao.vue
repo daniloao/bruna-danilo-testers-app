@@ -1,8 +1,12 @@
 <template>
   <div>
-    <div class="card" v-if="isSearchable">
+    <div class="card"
+         v-if="isSearchable">
       <div class="card-body">
-        <b-form-input type="text" placeholder="Procure por..." v-model="filtrarPorTexto" name="filtro"></b-form-input>
+        <b-form-input type="text"
+                      placeholder="Procure por..."
+                      v-model="filtrarPorTexto"
+                      name="filtro"></b-form-input>
       </div>
     </div>
     <div v-if="!pagedResponse.models || pagedResponse.models.length <= 0">
@@ -13,46 +17,77 @@
         <table class="table table-sm">
           <thead class="thead-light">
             <tr>
-              <th v-for="(column, key) in pagedResponse.columns" :key="key" class="paged-table-column">
-                <button @click="sort(column.propertyName)" class="btn btn-light">
+              <th v-for="(column, key) in pagedResponse.columns"
+                  :key="key"
+                  class="paged-table-column">
+                <button @click="sort(column.propertyName)"
+                        class="btn btn-link">
                   <b>{{ column.columnHeader }}</b>
                 </button>
-                <up v-if="pagedRequest.sortModel && pagedRequest.sortModel.colId === column.propertyName && pagedRequest.sortModel.sort === 'desc'"></up>
-                <down v-if="pagedRequest.sortModel && pagedRequest.sortModel.colId === column.propertyName && pagedRequest.sortModel.sort === 'asc'">
+                <up v-if="pagedRequest.sortModel && pagedRequest.sortModel.colId===column.propertyName && pagedRequest.sortModel.sort==='desc'">
+                </up>
+                <down v-if="pagedRequest.sortModel && pagedRequest.sortModel.colId===column.propertyName && pagedRequest.sortModel.sort==='asc'">
                 </down>
               </th>
-              <th v-for="(column, key) in actionColumns" :key="key+column.id" scope="col">{{ column.columnHeader }}</th>
+              <th v-for=" (column, key) in actionColumns"
+                  :key="key+column.id"
+                  scope="col">{{ column.columnHeader }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, key) in pagedResponse.models" :key="key">
-              <td v-for="(column, key) in pagedResponse.columns" :key="key">{{ getColumnValue(item, column) }}</td>
-              <td v-for="(column, key)  in actionColumns" :key="key + column.id">
-                <button class="btn btn-link" @click="column.action(item)">
-                  <span class="mdi" :class="column.icon">{{ column.text }}</span>
+            <tr v-for="(item, key) in pagedResponse.models"
+                :key="key">
+              <td v-for="(column, key) in pagedResponse.columns"
+                  :key="key">
+                <span v-if="column.columnType === 'link'">
+                  <button @click="linkGo(column.route + item[column.propertyName])"
+                          class="btn btn-link">
+                    <b>{{ getColumnValue(item, column) }}</b>
+                  </button>
+                </span>
+                <span v-if="column.columnType !== 'link'">
+                  {{ getColumnValue(item, column) }}
+                </span>
+              </td>
+              <td v-for="(column, key)  in actionColumns"
+                  :key="key + column.id">
+                <button class="btn btn-link"
+                        @click="column.action(item)">
+                  <span class="mdi"
+                        :class="column.icon">{{ column.text }}</span>
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="row pagination" v-if="pagedResponse.pageCount > 0">
+      <div class="row pagination"
+           v-if="pagedResponse.pageCount > 0">
         <div id="pagination-button-left">
-          <button @click="first()" class="btn btn-outline-dark" :disabled="pagedRequest.currentPage === 0">
+          <button @click="first()"
+                  class="btn btn-outline-dark"
+                  :disabled="pagedRequest.currentPage === 0">
             <double-left></double-left>
           </button>
-          <button @click="prevPage()" class="btn btn-outline-dark" :disabled="pagedRequest.currentPage === 0">
+          <button @click="prevPage()"
+                  class="btn btn-outline-dark"
+                  :disabled="pagedRequest.currentPage === 0">
             <left></left>
           </button>
         </div>
         <div>
-          Página {{ pagedRequest.currentPage + 1 }} de {{ pagedResponse.pageCount }}
+          Página {{ pagedRequest.currentPage + 1 }} de {{
+          pagedResponse.pageCount }}
         </div>
         <div id="pagination-button-right">
-          <button @click="nextPage()" class="btn btn-outline-dark" :disabled="pagedRequest.currentPage >= pagedResponse.pageCount - 1">
+          <button @click="nextPage()"
+                  class="btn btn-outline-dark"
+                  :disabled="pagedRequest.currentPage >= pagedResponse.pageCount - 1">
             <right></right>
           </button>
-          <button @click="last()" class="btn btn-outline-dark" :disabled="pagedRequest.currentPage === pagedResponse.pageCount - 1">
+          <button @click="last()"
+                  class="btn btn-outline-dark"
+                  :disabled="pagedRequest.currentPage === pagedResponse.pageCount - 1">
             <double-right></double-right>
           </button>
         </div>
@@ -167,7 +202,11 @@ export default {
     getColumnValue(item, column) {
       if (column.columnType === 'datetime') return moment(String(item[column.propertyName])).format(column.format);
       if (column.columnType === 'number') return numeral(item[column.propertyName]).format(column.format);
+      if (column.columnType === 'link') return `#${item[column.propertyName]}`;
       return item[column.propertyName];
+    },
+    linkGo(route) {
+      this.$router.push(route);
     },
     sort(propertyName) {
       if (this.pagedRequest.sortModel && this.pagedRequest.sortModel.colId === propertyName) {

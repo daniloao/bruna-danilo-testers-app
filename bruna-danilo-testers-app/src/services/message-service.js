@@ -24,19 +24,52 @@ export default {
             cancelText: 'No'
         });
     },
-    showNotification(vm, message, variant = 'success', dismissible = true, title = '', footer = '') { // , title, duration = 6000, type = 'warn') {
-        vm.$root.$emit('set-message', {
+    showNotification(message, title, variant = 'success') { // , title, duration = 6000, type = 'warn') {
+        switch (variant) {
+            case 'success':
+                this.success(message, title);
+                break;
+            case 'warn':
+                this.warn(message, title);
+                break;
+            case 'error':
+                this.error(message, title);
+                break;
+            default:
+                this.info(message, title);
+                break;
+        }
+    },
+    success(message, title) {
+        console.log(Vue.prototype.$toast);
+        console.log(Vue.prototype);
+        Vue.prototype.$toast.success({
             title: title,
-            message: message,
-            footer: footer,
-            variant: variant,
-            dismissible: dismissible
+            message: message
         });
     },
-    clearNotification(vm) { // , title, duration = 6000, type = 'warn') {
-        vm.$root.$emit('clear-message');
+    info(message, title) {
+        Vue.prototype.$toast.info({
+            title: title,
+            message: message
+        });
+    },
+    warn(message, title) {
+        Vue.prototype.$toast.warn({
+            title: title,
+            message: message
+        });
+    },
+    error(message, title) {
+        Vue.prototype.$toast.error({
+            title: title,
+            message: message
+        });
+    },
+    clearNotification() { // , title, duration = 6000, type = 'warn') {
+        Vue.prototype.$toast.removeAll();
     },
     showExpiredMessage() {
-        this.showNotification('Sua sessão expirou, favor faça novamente o login!', 'Sessão expirada');
+        this.showNotification('Sua sessão expirou, favor faça novamente o login!', 'Sessão expirada', 'error');
     }
 };
