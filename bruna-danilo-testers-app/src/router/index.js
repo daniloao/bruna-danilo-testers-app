@@ -5,7 +5,7 @@ import Contato from '@/components/Contato';
 import SobreNos from '@/components/SobreNos';
 import TesteProdutos from '@/components/TesteProdutos';
 import CuponsDesconto from '@/components/CuponsDesconto';
-import CadastroCampanhas from '@/components/campanha/CadastroCampanhas';
+import ListaCampanha from '@/components/campanha/ListaCampanha';
 import CadastroCliente from '@/components/cliente/CadastroCliente';
 import ListaCliente from '@/components/cliente/ListaCliente';
 import AccountService from '@/services/account-service';
@@ -58,8 +58,8 @@ export default new Router({
         },
         {
             path: '/campanhas',
-            name: 'CadastroCampanhas',
-            component: CadastroCampanhas,
+            name: 'ListaCampanha',
+            component: ListaCampanha,
             beforeEnter: ifAdmin
         },
         {

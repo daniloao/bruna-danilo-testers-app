@@ -33,7 +33,7 @@
         <div class="row form-group float-right">
           <div class="col col-md-12">
             <button class="btn btn-primary"
-                    @click="adiciona()">Adicionar</button>
+                    @click="adiciona()">Novo cliente</button>
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
                   :model="model"></bd-paginacao>
     <modal name="edit-cliente"
            width="80%"
-           height="70%"
+           height="90%"
            :click-to-close="false"
            :scrollable="true"
            :resizable="true"

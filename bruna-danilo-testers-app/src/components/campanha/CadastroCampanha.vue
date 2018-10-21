@@ -12,32 +12,40 @@
           <h6>ID: {{ model.id }}</h6>
         </div>
         <div v-if="!model.id || model.id <= 0">
-          <h6>Novo Cliente</h6>
+          <h6>Nova Campanha</h6>
         </div>
         <div class="row">
           <div class="col">
             <b-form-group horizontal
-                          label="CNPJ:"
+                          label="Anunciante:"
                           label-class="text-sm-right"
-                          label-for="cnpj">
-              <bd-validable-input type="text"
-                                  :mask="'##.###.###/####-##'"
-                                  name="cnpj"
-                                  placeholder="CNPJ"
-                                  :model.sync="model.cnpj"
-                                  :atualizaModel="atualizaModel"
-                                  :modelState.sync="modelState"></bd-validable-input>
+                          label-for="anuncianteId">
+              <div name="anuncianteId"
+                   v-if="model.anunciante.id > 0">{{
+                model.anunciante.id }}</div>
+              <div name="anuncianteId"
+                   v-if="!model.anunciante.id || model.anunciante.id <= 0">novo</div>
+            </b-form-group>
+            <b-form-group horizontal
+                          label="Nome anunciante:"
+                          label-class="text-sm-right"
+                          label-for="anuncianteNome">
+              <vue-simple-suggest name="anuncianteNome"
+                                  v-model="model.anunciante"
+                                  :list="anunciantes"
+                                  :filter-by-query="true">
+              </vue-simple-suggest>
             </b-form-group>
           </div>
           <div class="col">
             <b-form-group horizontal
-                          label="Razão Social:"
+                          label="Titulo:"
                           label-class="text-sm-right"
-                          label-for="razaoSocial">
+                          label-for="titulo">
               <bd-validable-input type="text"
-                                  name="razaoSocial"
-                                  placeholder="Razão Social"
-                                  :model.sync="model.razaoSocial"
+                                  name="titulo"
+                                  placeholder="Titulo"
+                                  :model.sync="model.titulo"
                                   :atualizaModel="atualizaModel"
                                   :modelState.sync="modelState"></bd-validable-input>
             </b-form-group>
@@ -46,13 +54,13 @@
         <div class="row">
           <div class="col">
             <b-form-group horizontal
-                          label="Nome Fantasia:"
+                          label="Texto:"
                           label-class="text-sm-right"
-                          label-for="nomeFantasia">
+                          label-for="texto">
               <bd-validable-input type="text"
-                                  name="nomeFantasia"
-                                  placeholder="Nome Fantasia"
-                                  :model.sync="model.nomeFantasia"
+                                  name="texto"
+                                  placeholder="Texto"
+                                  :model.sync="model.texto"
                                   :atualizaModel="atualizaModel"
                                   :modelState.sync="modelState"></bd-validable-input>
             </b-form-group>
@@ -320,7 +328,7 @@ export default {
     },
     sortedCidades() {
       return _.sortBy(this.cidades, [o => o.text]);
-    }
+    },
   },
   created() {
     const loader = this.$loading.show();

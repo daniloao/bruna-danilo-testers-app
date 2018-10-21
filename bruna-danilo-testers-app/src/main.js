@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import AccountService from '@/services/account-service';
 import MessageService from '@/services/message-service';
+import VueSimpleSuggest from 'vue-simple-suggest/dist/es7';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import 'vuejs-dialog/dist/vuejs-dialog.min.css';
@@ -10,6 +11,7 @@ import 'vue-material/dist/vue-material.css';
 import 'vue-good-table/dist/vue-good-table.css';
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css';
 import 'vue-loading-overlay/dist/vue-loading.css';
+import 'vue-simple-suggest/dist/styles.css';
 import '@/assets/site.css';
 // You also need to import the styles. If you're using webpack's css-loader, you can do so here:
 import 'vue-snotify/styles/material.css'; // or dark.css or simple.css
@@ -56,6 +58,7 @@ Vue.use(VueLocalStorage, {
 });
 
 Vue.component('model-select', ModelSelect);
+Vue.component('vue-simple-suggest', VueSimpleSuggest);
 
 Vue.http.options.root = process.env.API_URL_ADDRESS;
 Vue.config.productionTip = false;
