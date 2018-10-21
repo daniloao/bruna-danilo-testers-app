@@ -30,8 +30,9 @@ export default {
             this.setCurrentUser(response.data.token);
             loader.hide();
             return response;
-        }, () => {
+        }, (error) => {
             loader.hide();
+            throw error;
         });
     },
     register(user) {
@@ -43,8 +44,9 @@ export default {
             this.setCurrentUser(response.data.token);
             loader.hide();
             return response;
-        }, () => {
+        }, (error) => {
             loader.hide();
+            throw error;
         });
     },
     decodeJwtToken(tkn) {

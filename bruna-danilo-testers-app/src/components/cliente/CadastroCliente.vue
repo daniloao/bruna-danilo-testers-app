@@ -9,7 +9,10 @@
                     label-class="font-weight-bold pt-0"
                     class="mb-0">
         <div v-if="model.id > 0">
-          <h3>ID: {{ model.id }}</h3>
+          <h6>ID: {{ model.id }}</h6>
+        </div>
+        <div v-if="!model.id || model.id <= 0">
+          <h6>Novo Cliente</h6>
         </div>
         <div class="row">
           <div class="col">
@@ -204,6 +207,15 @@ export default {
     },
     cidade() {
       this.model.cidadeId = parseInt(this.cidade, 10);
+    },
+    cliente() {
+      this.model = this.cliente;
+    }
+  },
+  props: {
+    cliente: {
+      type: Object,
+      required: true
     }
   },
   components: {
@@ -238,16 +250,17 @@ export default {
   },
   methods: {
     salvar() {
+      this.modelState = {};
+      this.cidadesEstadosModelState = [];
       ClienteService.saveCliente(this.model).then(() => {
-        MessageService.showAlert('Sucesso!', 'Cliente cadastrado com sucesso!').then(() => {
-          this.$router.push('/clientes');
-        });
+        MessageService.success('Cliente cadastrado com sucesso!', 'Sucesso!');
+        this.$modal.hide('edit-cliente');
+      }, (error) => {
+        console.log(error);
       });
     },
     cancelar() {
-      MessageService.showConfirm('Tem certeza?', 'Tem certeza que deseja cancelar?!').then(() => {
-        this.$router.push('/clientes');
-      });
+      this.$modal.hide('edit-cliente');
     },
     atualizaModel(propName, valor) {
       if (propName === 'estado') this.estado = valor;
@@ -255,17 +268,22 @@ export default {
       else this.model[propName] = valor;
     },
     loadCidades(estadoId) {
+      if (estadoId <= 0) {
+        return Promise.resolve();
+      }
+
       const cidade = {
         estado: estadoId
       };
 
-      IBGEService.getCidades(cidade).then((response) => {
+      return IBGEService.getCidades(cidade).then((response) => {
         response.data.forEach((currentCidade) => {
           this.cidades.push({
             value: `${currentCidade.id}`,
             text: currentCidade.nome
           });
         });
+        return response;
       });
     },
     loadEstados() {
@@ -276,11 +294,7 @@ export default {
             text: currentEstado.sigla
           });
         });
-      });
-    },
-    loadCliente() {
-      ClienteService.getCliente(this.model.id).then((response) => {
-        this.model = response.data;
+        return response;
       });
     }
   },
@@ -293,11 +307,17 @@ export default {
     }
   },
   created() {
+    const loader = this.$loading.show();
+
     this.loadEstados().then(() => {
-      if (this.$route.params.id > 0) {
-        this.model.id = this.$route.params.id;
-        this.loadCliente();
-      }
+      this.loadCidades(this.cliente.estadoId).then(() => {
+        this.model = this.cliente;
+        loader.hide();
+      }, () => {
+        loader.hide();
+      });
+    }, () => {
+      loader.hide();
     });
   }
 };

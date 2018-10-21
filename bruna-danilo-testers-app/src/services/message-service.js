@@ -41,8 +41,6 @@ export default {
         }
     },
     success(message, title) {
-        console.log(Vue.prototype.$toast);
-        console.log(Vue.prototype);
         Vue.prototype.$toast.success({
             title: title,
             message: message

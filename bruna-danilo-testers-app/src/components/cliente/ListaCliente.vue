@@ -42,6 +42,20 @@
                   sort-column="id"
                   :action-columns="actionColumns"
                   :model="model"></bd-paginacao>
+    <modal name="edit-cliente"
+           width="80%"
+           height="70%"
+           :click-to-close="false"
+           :scrollable="true"
+           :resizable="true"
+           :adaptive="true"
+           :draggable="true"
+           @closed="filtrar()">
+      <div class="modal-container">
+        <cadastro-cliente :cliente="selectedCliente">
+        </cadastro-cliente>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -50,6 +64,7 @@ import BdPaginacao from '@/components/shared/BdPaginacao';
 import IBGEService from '@/services/ibge-service';
 import ClienteService from '@/services/cliente-service';
 import MessageService from '@/services/message-service';
+import CadastroCliente from '@/components/cliente/CadastroCliente';
 import _ from 'lodash';
 import { ModelSelect } from 'vue-search-select';
 
@@ -65,11 +80,13 @@ export default {
   },
   components: {
     BdPaginacao,
-    ModelSelect
+    ModelSelect,
+    CadastroCliente
   },
   data() {
     return {
       actionColumns: [],
+      selectedCliente: {},
       model: {
         cnpj: null,
         estadoId: 0,
@@ -85,16 +102,35 @@ export default {
       return ClienteService.getClientes(model);
     },
     atualiza(cliente) {
-      const clienteId = cliente.id;
-      this.$router.push(`/cliente/${clienteId}`);
+      this.selectedCliente = cliente;
+      this.$modal.show('edit-cliente');
     },
     adiciona() {
-      this.$router.push('/cliente');
+      this.selectedCliente = {
+        id: 0,
+        cnpj: '',
+        razaoSocial: '',
+        nomeFantasia: '',
+        endereco: '',
+        telefone: '',
+        skype: '',
+        isActive: true,
+        email: '',
+        contato: '',
+        cidadeId: 0,
+        estadoId: 0
+      };
+      this.$modal.show('edit-cliente');
     },
     delete(cliente) {
-      MessageService.error('test', 'test');
       console.log('delete');
       console.log(cliente);
+      MessageService.showConfirm('Tem certeza!', `Tem certeza que deseja deletar o cliente ${cliente.id}`).then(() => {
+        ClienteService.deleteCliente(cliente.id).then(() => {
+          MessageService.success('Cliente deletado com sucesso!', 'Sucesso!');
+          this.filtrar();
+        });
+      });
     },
     loadActionColumns() {
       this.actionColumns.push({
