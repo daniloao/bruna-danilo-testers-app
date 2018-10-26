@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!isSelect() && !isRadio() && !isCheckbox()">
+    <div v-if="isText()">
       <b-form-input :type="type"
                     v-if="mask !== ''"
                     v-mask="mask"
@@ -32,6 +32,22 @@
              :name="name">
       <label :for="name">{{ placeholder }}</label>
     </div>
+    <div v-if="isSuggest()">
+      <vue-simple-suggest :name="name"
+                          v-model="modelMutatable"
+                          :list="options"
+                          :filter-by-query="true"
+                          :placeholder="placeholder"
+                          :display-attribute="displayAtribute"
+                          :value-attribute="valueAttribute"
+                          @select="selectSuggest"
+                          ref="suggestComponent">
+      </vue-simple-suggest>
+    </div>
+    <div v-if="isDatepicker()">
+      <datetime :name="name"
+                v-model="modelMutatable"></datetime>
+    </div>
     <b-alert variant="danger"
              :show="showValidadtionMessage && modesStateMessages.length > 0">
       <p class="validation-message"
@@ -58,15 +74,23 @@ export default {
     bFormGroup
   },
   props: {
+    index: Number,
     type: String,
     model: [String, Number, Object, Boolean, Array],
     placeholder: String,
     name: String,
     modelState: {},
-    sortedEstados: Array,
     atualizaModel: Function,
     options: Array,
     isDisabled: Boolean,
+    displayAtribute: {
+      type: String,
+      default: 'nome'
+    },
+    valueAttribute: {
+      type: String,
+      default: 'id'
+    },
     showValidadtionMessage: {
       type: Boolean,
       default: true
@@ -79,11 +103,15 @@ export default {
   data() {
     return {
       modelMutatable: this.model,
-      modelStateMutable: this.modelState,
-      checkboxModelMutable: this.checkboxModel
+      modelStateMutable: this.modelState
     };
   },
   methods: {
+    selectSuggest(selected) {
+      if (selected) {
+        this.$emit('suggest-selected', selected, this.index);
+      }
+    },
     isSelect() {
       return this.type === 'select';
     },
@@ -92,6 +120,19 @@ export default {
     },
     isCheckbox() {
       return this.type === 'checkbox';
+    },
+    isSuggest() {
+      return this.type === 'suggest';
+    },
+    isDatepicker() {
+      return this.type === 'datepicker';
+    },
+    isText() {
+      return !this.isSelect()
+        && !this.isRadio()
+        && !this.isCheckbox()
+        && !this.isSuggest()
+        && !this.isDatepicker();
     }
   },
   created() { },
@@ -104,14 +145,10 @@ export default {
     },
     modelMutatable() {
       this.modelStateMutable = {};
-      this.atualizaModel(this.name, this.modelMutatable);
-    },
-    checkboxModel() {
-      this.checkboxModelMutable = this.checkboxModel;
-    },
-    checkboxModelMutable() {
-      this.modelStateMutable = {};
-      this.atualizaModel(this.name, this.modelMutatable);
+      if (this.isSuggest() && this.$refs.suggestComponent.selected) {
+        return;
+      }
+      this.atualizaModel(this.name, this.modelMutatable, this.index);
     }
   },
   computed: {

@@ -123,8 +123,6 @@ export default {
       this.$modal.show('edit-cliente');
     },
     delete(cliente) {
-      console.log('delete');
-      console.log(cliente);
       MessageService.showConfirm('Tem certeza!', `Tem certeza que deseja deletar o cliente ${cliente.id}`).then(() => {
         ClienteService.deleteCliente(cliente.id).then(() => {
           MessageService.success('Cliente deletado com sucesso!', 'Sucesso!');

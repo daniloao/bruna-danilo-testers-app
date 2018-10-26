@@ -9,6 +9,7 @@ import ListaCampanha from '@/components/campanha/ListaCampanha';
 import CadastroCliente from '@/components/cliente/CadastroCliente';
 import ListaCliente from '@/components/cliente/ListaCliente';
 import AccountService from '@/services/account-service';
+import CadastroCampanha from '@/components/campanha/CadastroCampanha';
 
 Vue.use(Router);
 
@@ -60,6 +61,12 @@ export default new Router({
             path: '/campanhas',
             name: 'ListaCampanha',
             component: ListaCampanha,
+            beforeEnter: ifAdmin
+        },
+        {
+            path: '/campanha/:id?',
+            name: 'CadastroCampanha',
+            component: CadastroCampanha,
             beforeEnter: ifAdmin
         },
         {

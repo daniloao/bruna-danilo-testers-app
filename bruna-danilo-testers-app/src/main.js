@@ -12,6 +12,7 @@ import 'vue-good-table/dist/vue-good-table.css';
 import 'cxlt-vue2-toastr/dist/css/cxlt-vue2-toastr.css';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import 'vue-simple-suggest/dist/styles.css';
+import 'vue-datetime/dist/vue-datetime.css';
 import '@/assets/site.css';
 // You also need to import the styles. If you're using webpack's css-loader, you can do so here:
 import 'vue-snotify/styles/material.css'; // or dark.css or simple.css
@@ -20,6 +21,7 @@ import App from './App';
 import router from './router';
 import VueResource from 'vue-resource';
 import CxltToastr from 'cxlt-vue2-toastr';
+import Datetime from 'vue-datetime';
 import Loading from 'vue-loading-overlay';
 import VModal from 'vue-js-modal';
 import NProgress from 'nprogress';
@@ -41,6 +43,7 @@ Vue.use(CxltToastr, {
     hideDuration: 1000,
     timeOut: 3500
 });
+Vue.use(Datetime);
 Vue.use(Loading);
 Vue.use(VModal);
 Vue.use(VueGoodTablePlugin);

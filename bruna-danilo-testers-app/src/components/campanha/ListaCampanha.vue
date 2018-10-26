@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-md-6">
         <button class="btn btn-primary btn-block"
-                @click="atualizaCidadesEstados">Nova campanha</button>
+                @click="novaCampanha">Nova campanha</button>
       </div>
       <div class="col-md-6">
         <button class="btn btn-secondary btn-block"
@@ -23,6 +23,9 @@ export default {
     return {};
   },
   methods: {
+    novaCampanha() {
+      this.$router.push('/campanha');
+    },
     atualizaCidadesEstados() {
       IBGEService.atualizaCidadesEstados().then(
         (resp) => {

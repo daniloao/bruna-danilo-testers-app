@@ -4,171 +4,106 @@
             class="login-box">
       <b-form-group vertical
                     breakpoint="lg"
-                    label="Cliente"
+                    :label="title"
                     label-size="lg"
                     label-class="font-weight-bold pt-0"
                     class="mb-0">
-        <div v-if="model.id > 0">
-          <h6>ID: {{ model.id }}</h6>
-        </div>
-        <div v-if="!model.id || model.id <= 0">
-          <h6>Nova Campanha</h6>
-        </div>
         <div class="row">
           <div class="col">
-            <b-form-group horizontal
-                          label="Anunciante:"
-                          label-class="text-sm-right"
-                          label-for="anuncianteId">
-              <div name="anuncianteId"
-                   v-if="model.anunciante.id > 0">{{
-                model.anunciante.id }}</div>
-              <div name="anuncianteId"
-                   v-if="!model.anunciante.id || model.anunciante.id <= 0">novo</div>
-            </b-form-group>
             <b-form-group horizontal
                           label="Nome anunciante:"
                           label-class="text-sm-right"
-                          label-for="anuncianteNome">
-              <vue-simple-suggest name="anuncianteNome"
-                                  v-model="model.anunciante"
-                                  :list="anunciantes"
-                                  :filter-by-query="true">
-              </vue-simple-suggest>
+                          label-for="anunciante">
+              <bd-validable-input type="suggest"
+                                  name="anunciante"
+                                  placeholder="Anunciante"
+                                  :model.sync="model.anunciante.nome"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"
+                                  :options="anunciantes"
+                                  @suggest-selected="anuncianteSelected"></bd-validable-input>
+              <span name="anunciante"
+                    v-if="model.anunciante.id > 0">Selecionado
+                anunciante:
+                <b>
+                  {{
+                  model.anunciante.id }} - {{ model.anunciante.nome
+                  }}
+                </b></span>
+              <span name="anunciante"
+                    v-if="!model.anunciante.id || model.anunciante.id <= 0">novo</span>
             </b-form-group>
           </div>
           <div class="col">
             <b-form-group horizontal
-                          label="Titulo:"
+                          label="Tipo de Campanha:"
                           label-class="text-sm-right"
-                          label-for="titulo">
-              <bd-validable-input type="text"
-                                  name="titulo"
-                                  placeholder="Titulo"
-                                  :model.sync="model.titulo"
+                          label-for="tipoCampanha">
+              <bd-validable-input type="select"
+                                  placeholder="Tipo de campanha"
+                                  name="tipoCampanha"
+                                  :model.sync="tipoCampanha"
                                   :atualizaModel="atualizaModel"
-                                  :modelState.sync="modelState"></bd-validable-input>
+                                  :modelState.sync="modelState"
+                                  :options="tiposCampanha"></bd-validable-input>
+            </b-form-group>
+          </div>
+        </div>
+        <div class="row"
+             v-for="(imagem, key) in model.imagens"
+             :key="key">
+          <div class="col">
+            <b-form-group horizontal
+                          label="Tipo de Imagem:"
+                          label-class="text-sm-right"
+                          label-for="tipoImagem">
+              <bd-validable-input type="select"
+                                  placeholder="Tipo de imagem"
+                                  name="tipoImagem"
+                                  :model.sync="selectedTipoImagem[key]"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"
+                                  :options="tiposImagem"
+                                  :index="key"></bd-validable-input>
+            </b-form-group>
+          </div>
+          <div class="col"
+               v-if="selectedTipoImagem[key] === '' ||
+                     parseInt(selectedTipoImagem[key], 10) === tipoImagemConstant.url.id">
+            <b-form-group horizontal
+                          label="Imagem URL"
+                          label-class="text-sm-right"
+                          label-for="url">
+              <bd-validable-input type="text"
+                                  placeholder="url"
+                                  name="url"
+                                  :model.sync="model.imagens[key].url"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"
+                                  :index="key"></bd-validable-input>
+            </b-form-group>
+          </div>
+          <div class="col"
+               v-if="selectedTipoImagem[key] !== '' &&
+                     parseInt(selectedTipoImagem[key], 10) === tipoImagemConstant.upload.id">
+            <b-form-group horizontal
+                          label="Imagem URL"
+                          label-class="text-sm-right"
+                          label-for="log">
+              <bd-validable-input type="text"
+                                  placeholder="Upload imagem"
+                                  name="logo"
+                                  :model.sync="model.imagens[key].logo"
+                                  :atualizaModel="atualizaModel"
+                                  :modelState.sync="modelState"
+                                  :index="key"></bd-validable-input>
             </b-form-group>
           </div>
         </div>
         <div class="row">
           <div class="col">
-            <b-form-group horizontal
-                          label="Texto:"
-                          label-class="text-sm-right"
-                          label-for="texto">
-              <bd-validable-input type="text"
-                                  name="texto"
-                                  placeholder="Texto"
-                                  :model.sync="model.texto"
-                                  :atualizaModel="atualizaModel"
-                                  :modelState.sync="modelState"></bd-validable-input>
-            </b-form-group>
-          </div>
-          <div class="col">
-            <b-form-group horizontal
-                          label="Contato:"
-                          label-class="text-sm-right"
-                          label-for="contato">
-              <bd-validable-input type="text"
-                                  name="contato"
-                                  placeholder="Contato"
-                                  :model.sync="model.contato"
-                                  :atualizaModel="atualizaModel"
-                                  :modelState.sync="modelState"></bd-validable-input>
-            </b-form-group>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <b-form-group horizontal
-                          label="Email:"
-                          label-class="text-sm-right"
-                          label-for="email">
-              <bd-validable-input type="text"
-                                  name="email"
-                                  placeholder="Email"
-                                  :model.sync="model.email"
-                                  :atualizaModel="atualizaModel"
-                                  :modelState.sync="modelState"></bd-validable-input>
-            </b-form-group>
-          </div>
-          <div class="col">
-            <b-form-group horizontal
-                          label="Endereço:"
-                          label-class="text-sm-right"
-                          label-for="endereco">
-              <bd-validable-input type="text"
-                                  name="endereco"
-                                  placeholder="Endereço"
-                                  :model.sync="model.endereco"
-                                  :atualizaModel="atualizaModel"
-                                  :modelState.sync="modelState"></bd-validable-input>
-            </b-form-group>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <b-form-group horizontal
-                          label="Telefone:"
-                          label-class="text-sm-right"
-                          label-for="telefone">
-              <bd-validable-input type="text"
-                                  :mask="'(##) #####-####'"
-                                  name="telefone"
-                                  placeholder="Telefone"
-                                  :model.sync="model.telefone"
-                                  :atualizaModel="atualizaModel"
-                                  :modelState.sync="modelState"></bd-validable-input>
-            </b-form-group>
-          </div>
-          <div class="col">
-            <b-form-group horizontal
-                          label="Skype:"
-                          label-class="text-sm-right"
-                          label-for="skype">
-              <bd-validable-input type="text"
-                                  name="skype"
-                                  placeholder="Skype"
-                                  :model.sync="model.skype"
-                                  :atualizaModel="atualizaModel"
-                                  :modelState.sync="modelState"></bd-validable-input>
-            </b-form-group>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <b-form-group horizontal
-                          label="Estado:"
-                          label-class="text-sm-right"
-                          label-for="cidadeEstado">
-              <div id="estadoDiv">
-                <bd-validable-input type="select"
-                                    placeholder="UF"
-                                    name="estado"
-                                    :model.sync="estado"
-                                    :atualizaModel="atualizaModel"
-                                    :modelState.sync="modelState"
-                                    :options="sortedEstados"></bd-validable-input>
-              </div>
-            </b-form-group>
-          </div>
-          <div class="col">
-            <b-form-group horizontal
-                          label="Cidade:"
-                          label-class="text-sm-right"
-                          label-for="cidadeEstado">
-              <div id="cidadeDiv">
-                <bd-validable-input type="select"
-                                    placeholder="Cidade"
-                                    name="cidade"
-                                    :model.sync="cidade"
-                                    :atualizaModel="atualizaModel"
-                                    :modelState.sync="modelState"
-                                    :options="sortedCidades"
-                                    :isDisabled="cidades.length <= 0"></bd-validable-input>
-              </div>
-            </b-form-group>
+            <b-button @click="adicionaImagem"
+                      variant="success">Adicionar imagem</b-button>
           </div>
         </div>
         <div class="row">
@@ -188,42 +123,15 @@ import bButton from 'bootstrap-vue/es/components/button/button';
 import bFormGroup from 'bootstrap-vue/es/components/form-group/form-group';
 import bCard from 'bootstrap-vue/es/components/card/card';
 import BdValidableInput from '@/components/directives/BdValidableInput';
-import IBGEService from '@/services/ibge-service';
-import ClienteService from '@/services/cliente-service';
-import MessageService from '@/services/message-service';
-import _ from 'lodash';
+import CampanhaService from '@/services/campanha-service';
+import tipoImagem from '@/constants/tipo-imagem';
+// import MessageService from '@/services/message-service';
+
 
 export default {
   watch: {
-    'model.estadoId'() {
-      if (this.cidades.length <= 0) this.model.cidadeId = 0;
-      this.cidadesEstadosModelState = [];
-      this.cidades = [];
-      if (this.model.estadoId > 0) {
-        const est = this.model.estadoId.toString();
-        if (est !== this.estado) this.estado = est;
-        this.loadCidades(this.model.estadoId);
-      }
-    },
-    'model.cidadeId'() {
-      const cid = this.model.cidadeId.toString();
-      if (cid !== this.cidade) this.cidade = cid;
-      this.cidadesEstadosModelState = [];
-    },
-    estado() {
-      this.model.estadoId = parseInt(this.estado, 10);
-    },
-    cidade() {
-      this.model.cidadeId = parseInt(this.cidade, 10);
-    },
-    cliente() {
-      this.model = this.cliente;
-    }
-  },
-  props: {
-    cliente: {
-      type: Object,
-      required: true
+    tipoCampanha() {
+      this.model.tipoCampanha.id = parseInt(this.tipoCampanha, 10);
     }
   },
   components: {
@@ -234,115 +142,108 @@ export default {
   },
   data() {
     return {
+      selectedTipoImagem: [],
+      anunciantes: [],
+      tiposCampanha: [],
+      tiposImagem: [],
+      tipoCampanha: '',
       model: {
         id: 0,
-        cnpj: '',
-        razaoSocial: '',
-        nomeFantasia: '',
-        endereco: '',
-        telefone: '',
-        skype: '',
-        isActive: true,
-        email: '',
-        contato: '',
-        cidadeId: 0,
-        estadoId: 0
+        anunciante: {
+          id: 0,
+          nome: ''
+        },
+        tipoCampanha: {
+          id: 0
+        },
+        imagens: []
       },
-      estados: [],
-      cidades: [],
-      modelState: {},
-      cidadesEstadosModelState: [],
-      estado: '',
-      cidade: ''
+      modelState: {}
     };
   },
   methods: {
+    adicionaImagem() {
+      this.selectedTipoImagem.push('');
+      this.model.imagens.push({
+        id: 0,
+        tipoImagem: {
+          id: 0
+        },
+        url: '',
+        logo: null
+      });
+    },
+    anuncianteSelected(selected) {
+      this.model.anunciante = selected;
+    },
     salvar() {
       this.modelState = {};
-      this.cidadesEstadosModelState = [];
-      ClienteService.saveCliente(this.model).then(() => {
-        MessageService.success('Cliente cadastrado com sucesso!', 'Sucesso!');
-        this.$modal.hide('edit-cliente');
-      }, (error) => {
-        console.log('saveCliente error');
-        console.log(error);
-        if (error.statusText === 'Bad Request') {
-          if (error.body.Estado) {
-            _.forEach(error.body.Estado, (est) => {
-              this.cidadesEstadosModelState.push(est);
-            });
-          }
-          if (error.body.Cidade) {
-            _.forEach(error.body.Cidade, (cid) => {
-              this.cidadesEstadosModelState.push(cid);
-            });
-          }
-          setInterval(() => {
-            this.modelState = error.body;
-          }, 500);
-        }
-      });
     },
     cancelar() {
       this.$modal.hide('edit-cliente');
     },
-    atualizaModel(propName, valor) {
-      if (propName === 'estado') this.estado = valor;
-      else if (propName === 'cidade') this.cidade = valor;
-      else this.model[propName] = valor;
-    },
-    loadCidades(estadoId) {
-      if (estadoId <= 0) {
-        return Promise.resolve();
+    atualizaModel(propName, valor, index) {
+      if (propName === 'anunciante') {
+        this.model.anunciante = {
+          id: 0,
+          nome: valor
+        };
+      } else if (propName === 'tipoCampanha') {
+        this.tipoCampanha = valor;
+      } else if (propName === 'tipoImagem') {
+        this.selectedTipoImagem[index] = valor;
+        this.model.imagens[index].tipoImagem.id = parseInt(valor, 10);
+      } else if (propName === 'url') {
+        this.model.imagens[index].url = valor;
+      } else if (propName === 'logo') {
+        this.model.imagens[index].logo = valor;
+      } else {
+        this.model[propName] = valor;
       }
-
-      const cidade = {
-        estado: estadoId
-      };
-
-      return IBGEService.getCidades(cidade).then((response) => {
-        response.data.forEach((currentCidade) => {
-          this.cidades.push({
-            value: `${currentCidade.id}`,
-            text: currentCidade.nome
-          });
-        });
-        return response;
+      console.log(this.model);
+    },
+    loadAnunciantes() {
+      CampanhaService.getAnunciantes().then((resp) => {
+        this.anunciantes = resp.data;
       });
     },
-    loadEstados() {
-      return IBGEService.getEstados().then((response) => {
-        response.data.forEach((currentEstado) => {
-          this.estados.push({
-            value: `${currentEstado.id}`,
-            text: currentEstado.sigla
+    loadTiposCampanha() {
+      CampanhaService.getTiposCampanha().then((resp) => {
+        resp.data.forEach((current) => {
+          this.tiposCampanha.push({
+            value: `${current.id}`,
+            text: current.descricao
           });
         });
-        return response;
+      });
+    },
+    loadTiposImagem() {
+      CampanhaService.getTiposImagem().then((resp) => {
+        resp.data.forEach((current) => {
+          this.tiposImagem.push({
+            value: `${current.id}`,
+            text: current.nome
+          });
+        });
       });
     }
   },
   computed: {
-    sortedEstados() {
-      return _.sortBy(this.estados, [o => o.text]);
+    tipoImagemConstant() {
+      return tipoImagem;
     },
-    sortedCidades() {
-      return _.sortBy(this.cidades, [o => o.text]);
-    },
+    title() {
+      if (this.model.id > 0) {
+        return `Campanha ID: ${this.model.id}`;
+      }
+      return 'Nova campanha';
+    }
   },
   created() {
-    const loader = this.$loading.show();
-
-    this.loadEstados().then(() => {
-      this.loadCidades(this.cliente.estadoId).then(() => {
-        this.model = this.cliente;
-        loader.hide();
-      }, () => {
-        loader.hide();
-      });
-    }, () => {
-      loader.hide();
-    });
+    this.loadAnunciantes();
+    this.loadTiposCampanha();
+    this.loadTiposImagem();
+    this.adicionaImagem();
   }
 };
 </script>

@@ -256,8 +256,6 @@ export default {
         MessageService.success('Cliente cadastrado com sucesso!', 'Sucesso!');
         this.$modal.hide('edit-cliente');
       }, (error) => {
-        console.log('saveCliente error');
-        console.log(error);
         if (error.statusText === 'Bad Request') {
           if (error.body.Estado) {
             _.forEach(error.body.Estado, (est) => {
