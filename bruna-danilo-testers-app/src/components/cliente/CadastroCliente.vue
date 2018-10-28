@@ -163,11 +163,17 @@
             </b-form-group>
           </div>
         </div>
-        <div class="row">
-          <div class="col">
+        <div class="row center-align">
+          <div class="col col-md-12">
             <b-button @click="salvar"
-                      variant="primary">Salvar</b-button>
-            <b-button @click="cancelar">Cancelar</b-button>
+                      variant="primary">
+              <font-awesome-icon icon="save">
+              </font-awesome-icon>&nbsp;Salvar
+            </b-button>
+            <b-button @click="cancelar">
+              <font-awesome-icon icon="ban">
+              </font-awesome-icon>&nbsp;Cancelar
+            </b-button>
           </div>
         </div>
       </b-form-group>

@@ -3,10 +3,11 @@ import Vue from 'vue';
 export default {
     resource: undefined,
     customActions: {
-        getClientes: { method: 'POST', url: 'cliente/clientes' },
+        getClientes: { method: 'POST', url: 'cliente/filteredClientes' },
         saveCliente: { method: 'POST', url: 'cliente/save' },
         getCliente: { method: 'GET', url: 'cliente/cliente' },
-        deleteCliente: { method: 'DELETE', url: 'cliente/delete' }
+        deleteCliente: { method: 'DELETE', url: 'cliente/delete' },
+        getAll: { method: 'GET', url: 'cliente/clientes' }
     },
     setUp() {
         if (this.resource === undefined) {
@@ -16,6 +17,10 @@ export default {
     getClientes(model) {
         this.setUp();
         return this.resource.getClientes(model);
+    },
+    getAll() {
+        this.setUp();
+        return this.resource.getAll();
     },
     saveCliente(model) {
         const loader = Vue.prototype.$loading.show();

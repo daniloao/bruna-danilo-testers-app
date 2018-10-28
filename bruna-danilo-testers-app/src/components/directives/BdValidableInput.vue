@@ -30,7 +30,7 @@
       <input :type="type"
              v-model="modelMutatable"
              :name="name">
-      <label :for="name">{{ placeholder }}</label>
+      <label :for="name"><b>{{ placeholder }}</b></label>
     </div>
     <div v-if="isSuggest()">
       <vue-simple-suggest :name="name"
@@ -45,8 +45,45 @@
       </vue-simple-suggest>
     </div>
     <div v-if="isDatepicker()">
-      <datetime :name="name"
-                v-model="modelMutatable"></datetime>
+      <datetime input-class="form-control"
+                :name="name"
+                v-model="modelMutatable"
+                type="date"
+                :min-datetime="minDatetime"
+                :max-datetime="maxDatetime"></datetime>
+    </div>
+    <div v-if="isFile()">
+      <b-form-file :placeholder="placeholder"
+                   v-model="modelMutatable"
+                   :name="name"
+                   :accept="accept"></b-form-file>
+    </div>
+    <div v-if="isTextarea()">
+      <b-form-textarea :id="name"
+                       :name="name"
+                       v-model="modelMutatable"
+                       :placeholder="placeholder"
+                       :rows="3"
+                       :max-rows="6">
+      </b-form-textarea>
+    </div>
+    <div v-if="isMultiselect()">
+      <multiselect v-model="modelMutatable"
+                   :options="options"
+                   :placeholder="placeholder"
+                   :name="name"
+                   :disabled="isDisabled"
+                   :close-on-select="false"
+                   :clear-on-select="false"
+                   :multiple="true"
+                   :preserve-search="true"
+                   :track-by="trackBy"
+                   :group-values="groupValues"
+                   :group-label="groupLabel"
+                   :label="label"
+                   :hide-selected="true"
+                   @remove="remove"
+                   :loading="loading"></multiselect>
     </div>
     <b-alert variant="danger"
              :show="showValidadtionMessage && modesStateMessages.length > 0">
@@ -65,18 +102,62 @@ import bFormGroup from 'bootstrap-vue/es/components/form-group/form-group';
 import bFormInput from 'bootstrap-vue/es/components/form-input/form-input';
 import bAlert from 'bootstrap-vue/es/components/alert/alert';
 import StringService from '@/services/string-service';
+import bFormFile from 'bootstrap-vue/es/components/form-file/form-file';
+import bFormTextarea from 'bootstrap-vue/es/components/form-textarea/form-textarea';
 
 export default {
   components: {
     'model-select': ModelSelect,
     bFormInput,
     bAlert,
-    bFormGroup
+    bFormGroup,
+    bFormFile,
+    bFormTextarea
   },
   props: {
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    label: {
+      type: String,
+      required: false,
+      default: 'nome'
+    },
+    groupValues: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    groupLabel: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    trackBy: {
+      type: String,
+      required: false,
+      default: 'nome'
+    },
+    accept: {
+      type: String,
+      required: false,
+      default: 'image/*'
+    },
+    minDatetime: {
+      type: String,
+      required: false,
+      default: null
+    },
+    maxDatetime: {
+      type: String,
+      required: false,
+      default: null
+    },
     index: Number,
     type: String,
-    model: [String, Number, Object, Boolean, Array],
+    model: [String, Number, Object, Boolean, Array, File],
     placeholder: String,
     name: String,
     modelState: {},
@@ -107,6 +188,9 @@ export default {
     };
   },
   methods: {
+    remove(item) {
+      this.$emit('remove', item);
+    },
     selectSuggest(selected) {
       if (selected) {
         this.$emit('suggest-selected', selected, this.index);
@@ -127,12 +211,24 @@ export default {
     isDatepicker() {
       return this.type === 'datepicker';
     },
+    isFile() {
+      return this.type === 'file';
+    },
+    isTextarea() {
+      return this.type === 'textarea';
+    },
+    isMultiselect() {
+      return this.type === 'multiselect';
+    },
     isText() {
       return !this.isSelect()
         && !this.isRadio()
         && !this.isCheckbox()
         && !this.isSuggest()
-        && !this.isDatepicker();
+        && !this.isDatepicker()
+        && !this.isFile()
+        && !this.isTextarea()
+        && !this.isMultiselect();
     }
   },
   created() { },

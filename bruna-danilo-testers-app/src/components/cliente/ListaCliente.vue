@@ -27,13 +27,19 @@
           </div>
           <div class="col col-md-1 float-right">
             <button class="btn  btn-outline-primary"
-                    @click="filtrar()">Filtrar</button>
+                    @click="filtrar()">
+              <font-awesome-icon icon="search">
+              </font-awesome-icon>&nbsp;Buscar
+            </button>
           </div>
         </div>
         <div class="row form-group float-right">
           <div class="col col-md-12">
             <button class="btn btn-primary"
-                    @click="adiciona()">Novo cliente</button>
+                    @click="adiciona()">
+              <font-awesome-icon icon="plus">
+              </font-awesome-icon>&nbsp;Novo cliente
+            </button>
           </div>
         </div>
       </div>
