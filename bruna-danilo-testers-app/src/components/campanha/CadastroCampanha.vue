@@ -78,7 +78,7 @@
               <bd-validable-input type="text"
                                   placeholder="url"
                                   name="url"
-                                  :model.sync="model.imagens[key].imagem.url"
+                                  :model.sync="model.imagens[key].url"
                                   :atualizaModel="atualizaModel"
                                   :modelState.sync="modelState"
                                   :index="key"></bd-validable-input>
@@ -95,7 +95,7 @@
               <bd-validable-input type="file"
                                   placeholder="Upload imagem"
                                   name="logo"
-                                  :model.sync="model.imagens[key].imagem.logo"
+                                  :model.sync="model.imagens[key].logo"
                                   :atualizaModel="atualizaModel"
                                   :modelState.sync="modelState"
                                   :index="key"></bd-validable-input>
@@ -223,7 +223,7 @@
             </b-form-group>
           </div>
           <div class="col col-md-6"
-               v-if="model.tipoCampanha.id === tipoCampanhaConstant.cupom.id">
+               v-if="model.tipoCampanhaId === tipoCampanhaConstant.cupom.id">
             <b-form-group horizontal
                           label="Cupom: "
                           label-class="text-sm-right"
@@ -318,7 +318,7 @@ import tipoImagem from '@/constants/tipo-imagem';
 import tipoCampanha from '@/constants/tipo-campanha';
 import moment from 'moment';
 import _ from 'lodash';
-// import MessageService from '@/services/message-service';
+import MessageService from '@/services/message-service';
 
 
 export default {
@@ -401,16 +401,10 @@ export default {
     adicionaImagem() {
       this.selectedTipoImagem.push('');
       this.model.imagens.push({
-        campanhaId: 0,
-        imagemId: 0,
-        imagem: {
-          id: 0,
-          tipoImagem: {
-            id: 0
-          },
-          url: '',
-          logo: null
-        }
+        id: 0,
+        tipoImagemId: 0,
+        url: '',
+        logo: null
       });
     },
     anuncianteSelected(selected) {
@@ -418,6 +412,14 @@ export default {
     },
     salvar() {
       this.modelState = {};
+      CampanhaService.save(this.model).then(() => {
+        MessageService.success('Campanha salva com sucesso.', 'Sucesso');
+        this.$router.push('/campanhas');
+      }, (error) => {
+        if (error.statusText === 'Bad Request') {
+          this.modelState = error.body;
+        }
+      });
     },
     cancelar() {
       this.$router.push('/campanhas');
@@ -438,11 +440,11 @@ export default {
         this.tipoCampanha = valor;
       } else if (propName === 'tipoImagem') {
         this.$set(this.selectedTipoImagem, index, valor);
-        this.model.imagens[index].imagem.tipoImagem.id = parseInt(valor, 10);
+        this.model.imagens[index].tipoImagemId = parseInt(valor, 10);
       } else if (propName === 'url') {
-        this.model.imagens[index].imagem.url = valor;
+        this.model.imagens[index].url = valor;
       } else if (propName === 'logo') {
-        this.model.imagens[index].imagem.logo = valor;
+        this.model.imagens[index].logo = valor;
       } else if (propName === 'cliente') {
         this.selectedCliente = valor;
       } else {
